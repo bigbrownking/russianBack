@@ -2,6 +2,7 @@ package org.example.russianlanguage.model;
 
 
 import lombok.*;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -12,10 +13,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @AllArgsConstructor
 @ToString
 @Data
-@Document(collection = "proverb")
+@Document(collection = "proverbs")
 public class Proverb {
     @Id
-    private Integer _id;
+    private String _id;
 
     @Field("description")
     private String description;
@@ -25,5 +26,11 @@ public class Proverb {
 
     @Field("category")
     private String category;
+
+    public Proverb(String description, String meaning, String category){
+        this.description = description;
+        this.meaning = meaning;
+        this.category = category;
+    }
 
 }

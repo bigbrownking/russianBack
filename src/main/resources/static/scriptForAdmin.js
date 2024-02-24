@@ -37,15 +37,14 @@ function showUsers(data) {
             //_________________delete user______________________
             var td = document.createElement('button');
             td.innerText = "Delete"
-            td.id = user["Id"]
+            td.id = user["_id"]
+            console.log(user["_id"])
             td.addEventListener("click", () => {
-                let item = document.getElementById(`${user["Id"]}`)
-                deleteUser(item.id)
+                deleteUser(user["_id"])
             })
             td.style.border = "1px solid #000"
             td.style.padding = "3px"
             tr.appendChild(td)
-            tr.appendChild(tu);
 
             tbdy.appendChild(tr);
         }
@@ -71,16 +70,17 @@ async function getData() {
     }
 }
 async function deleteUser(id) {
+    let data = null;
     try {
         console.log(id);
-        await axios.post("/deleteUser", {params :{ "id": id }}).then(response => {
+        await axios.post("/deleteUser", { id: id }).then(response => {
             data = response.data
             console.log(response.data);
         })
             .catch(error => {
                 console.error('Ошибка:', error);
             });
-        if (data.status == 200) {
+        if (data.status === 200) {
             alert(data.message + " " + id)
             getData()
         }
@@ -107,9 +107,12 @@ async function addProverb() {
             return;
         }
         modal.toggle()  
-        await axios.post("/addProverb", {params: { "title": title, "discription": discription, "category": category}})
+        await axios.post("/addProverb", {params: { "meaning": title, "description": discription, "category": category}})
             .then(response => {
                 console.log(response.data);
+                if(response.data.id){
+                    alert("Успешно. ID пословицы: "+response.data.id)
+                }
             })
             .catch(error => {
                 console.error('Ошибка:', error);

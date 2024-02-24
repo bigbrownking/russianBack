@@ -22,6 +22,7 @@ public class UserController {
 
     private UserService userService;
     private ProverbService proverbService;
+
     @Autowired
     public UserController(UserService userService, ProverbService proverbService) {
         this.userService = userService;
@@ -29,23 +30,25 @@ public class UserController {
     }
 
 
-    @GetMapping("/all")
-    @ResponseStatus(code = HttpStatus.OK, reason = "OK")
-    public List<User> getUsers(){
-        return userService.getAllUsers();
+    @GetMapping("/getUsers")
+    public ResponseEntity<List<User>> getUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+
     }
 
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody Map<String, Object> params, HttpServletRequest request){
+    public ResponseEntity<User> login(@RequestBody Map<String, Object> params, HttpServletRequest request) {
         Map<String, String> userParams = (Map<String, String>) params.get("params");
         String login = userParams.get("login");
         String password = userParams.get("password");
         User user = new User(login, password);
+
         User loggedInUser = userService.login(user);
-        if(loggedInUser != null){
-            HttpSession session = request.getSession(); // Get the session from the request
-            session.setAttribute("user", loggedInUser); // Set user in session
+        if (loggedInUser != null) {
+            HttpSession session = request.getSession();
+            session.setAttribute("user", loggedInUser);
             return ResponseEntity.status(HttpStatus.OK).body(loggedInUser);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -53,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/reg")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody Map<String, Object> params) {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody Map<String, Object> params, HttpServletRequest request) {
         Map<String, String> userParams = (Map<String, String>) params.get("params");
         String login = userParams.get("login");
         String password = userParams.get("password");
@@ -62,6 +65,8 @@ public class UserController {
 
         Map<String, Object> response = new HashMap<>();
         if (registeredUser != null) {
+            HttpSession session = request.getSession();
+            session.setAttribute("user", registeredUser);
             response.put("status", 200);
             response.put("id", registeredUser.get_id());
             response.put("login", registeredUser.getUsername());
@@ -72,40 +77,38 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-//    @GetMapping("/logout")
-//    public User logout(@PathVariable String _id){
-//        User userToLogout = userService.getUser(_id);
-//
-//
-//    }
 
-    @PutMapping("/update/{username}")
-    public User updateUser(@PathVariable String username, @RequestBody User user){
-        return userService.updateUser(username, user);
-    }
-
-
-    @DeleteMapping("/delete/{username}")
-    public User deleteUser(@PathVariable String username){
-        return userService.deleteUser(username);
-    }
-
-
-    @GetMapping("/get/{username}")
-    public User getUser(@PathVariable String username){
-        return userService.getUserByName(username);
+    @GetMapping("/logOut")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+        return ResponseEntity.ok("User has been logged out");
     }
 
     @PostMapping("/addFavorite")
-    public ResponseEntity<User> addProverbToFavorites(@RequestParam String user_id, @RequestBody String proverb_id){
+    public ResponseEntity<User> addProverbToFavorites(@RequestParam String user_id, @RequestBody String proverb_id) {
         User user = userService.getUserByName(user_id);
         Proverb proverb = proverbService.getProverb(proverb_id);
-        if(user != null){
+        if (user != null) {
             userService.addProverbToFavorites(user, proverb);
             return ResponseEntity.status(HttpStatus.OK).body(user);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+    }
+
+    @PostMapping("/deleteUser")
+    public ResponseEntity<Map<String, Object>> deleteUser(@RequestBody Map<String, Object> params) {
+        String id = (String) params.get("id");
+        System.out.println(id);
+        User userToDelete = userService.deleteUser(id);
+        Map<String, Object> response = new HashMap<>();
+        if (userToDelete != null) {
+            response.put("status", 200);
+            response.put("message", "Пользователь был удален");
+        } else {
+            response.put("status", 400);
+        }
+        return ResponseEntity.ok(response);
     }
 }
 

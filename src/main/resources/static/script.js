@@ -12,34 +12,72 @@ let query = {
 }
 async function isLogin(){
     await axios.get("isLogin").then(res=>{
-        userInfo = {
-        id : res.data.id,
-        login : res.data.login,
-        isAdmin: res.data.isAdmin,
-        favorites: res.data.favorites
+        if(res.status === 200){
+            userInfo = {
+                id : res.data["_id"],
+                login : res.data.username,
+                isAdmin: res.data.admin,
+                favorites: res.data.favorites
+            }
+        }
+        else{
+            userInfo = {
+                id : null,
+                login : null,
+                isAdmin: null,
+                favorites: null
+            }
+        }
+
+    }).catch(error => {
+        console.error('Ошибка:', error);
+    });
+    if(userInfo.id !== null && userInfo.login !== null){
+        let AdminPageBody = document.querySelector(".AdminPageBody")
+        console.log(AdminPageBody)
+        if(userInfo.isAdmin){
+            let adminPage = document.querySelector("#adminPageNav")
+            adminPage.style.display = "inline"
+            if(AdminPageBody){
+                AdminPageBody.style.display = "inline"
+            }
+        }else{
+            if(AdminPageBody){
+                AdminPageBody.style.display = "none"
+            }
+        }
+        let loginPage = document.querySelector("#loginPage")
+        loginPage.style.display = "none"
+        let logoutPage = document.querySelector("#logoutPage")
+        logoutPage.style.display = "inline"
+        let profile = document.querySelector("#profilePage")
+        profile.style.display = "inline"
+
+        let currentPage = thisPath[thisPath.length - 1].slice(0, -1)
+        if(currentPage === "profile"){
+            let ProfilePageBody = document.querySelector(".ProfilePageBody")
+            if(ProfilePageBody){
+                ProfilePageBody.style.display = "inline"
+            }
+        }
     }
-    })
-}
-isLogin()
-if(userInfo.id !== null && userInfo.login !== null){
-    if(userInfo.isAdmin){
-        let adminPage = document.querySelector("#adminPageNav")
-        adminPage.style.display = "inline"
+    else{
+        let AdminPageBody = document.querySelector(".AdminPageBody")
+        if(AdminPageBody){
+            AdminPageBody.style.display = "none"
+        }
+        let ProfilePageBody = document.querySelector(".ProfilePageBody")
+        if(ProfilePageBody){
+            ProfilePageBody.style.display = "none"
+        }
     }
-    let loginPage = document.querySelector("#loginPage")
-    loginPage.style.display = "none"
-    let logoutPage = document.querySelector("#logoutPage")
-    logoutPage.style.display = "inline"
-    let profile = document.querySelector("#profilePage")
-    profile.style.display = "inline"
-}
-if(thisPath[thisPath.length - 1].length > 2){
-    let currentPage = thisPath[thisPath.length - 1].slice(0, -1)
-    let nav = document.querySelector("#" + currentPage)
-    nav.className = "nav-link active"
-    if(currentPage === "profile"){
-        let table = document.querySelector(".profileInformation")
-        table.innerHTML = `
+    if(thisPath[thisPath.length - 1].length > 2){
+        let currentPage = thisPath[thisPath.length - 1].slice(0, -1)
+        let nav = document.querySelector("#" + currentPage)
+        nav.className = "nav-link active"
+        if(currentPage === "profile"){
+            let table = document.querySelector(".profileInformation")
+            table.innerHTML = `
         <tr>
             <th scope="row">ID</th>
             <td>${userInfo.id}</td>
@@ -48,11 +86,14 @@ if(thisPath[thisPath.length - 1].length > 2){
             <th scope="row">Логин</th>
             <td>${userInfo.login}</td>
         </tr>`
+        }
+    }else{
+        let nav = document.querySelector("#main")
+        nav.className = "nav-link active"
     }
-}else{
-    let nav = document.querySelector("#main")
-    nav.className = "nav-link active"
+
 }
+isLogin()
 
 async function changeCategory(){
     let category = document.querySelector("#changeCategory")

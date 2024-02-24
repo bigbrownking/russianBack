@@ -1,5 +1,7 @@
 package org.example.russianlanguage.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.example.russianlanguage.model.Proverb;
 import org.example.russianlanguage.model.User;
 import org.example.russianlanguage.service.ProverbService;
@@ -10,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @ResponseBody
@@ -26,20 +30,35 @@ public class ProverbController {
     }
 
     @PostMapping("/getProverbs")
-    @ResponseStatus(code = HttpStatus.OK, reason = "OK")
-    public List<Proverb> getUsers(){
+    public List<Proverb> getProverbs(@RequestBody Map<String, Object> params, HttpServletRequest request){
+        String category = (String) params.get("category");
+        String search = (String) params.get("search");
+
+        //if(category == null && )
         return proverbService.getAllProverbs();
+
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Proverb> addProverb(@RequestBody Proverb proverb, @RequestHeader("userId") String userId){
-        User user = userService.getUserByName(userId);
+    @PostMapping("/addProverb")
+    public ResponseEntity<Map<String, Object>> addProverb(@RequestBody Map<String, Object> params, HttpServletRequest request){
+        Map<String, String> proverbParams = (Map<String, String>) params.get("params");
+        String category = proverbParams.get("category");
+        String description = proverbParams.get("description");
+        String meaning = proverbParams.get("meaning");
+        Proverb proverb = new Proverb(description, meaning, category);
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        Map<String, Object> response = new HashMap<>();
         if(user != null && user.isAdmin()){
             Proverb addedProverb = proverbService.addProverb(proverb);
-            return ResponseEntity.status(HttpStatus.CREATED).body(addedProverb);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            response.put("id", addedProverb.get_id());
+            response.put("description", addedProverb.getDescription());
+            response.put("meaning", addedProverb.getMeaning());
+            response.put("category", addedProverb.getCategory());
         }
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/{id}")

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class UserService {
@@ -25,10 +26,14 @@ public class UserService {
         }
         return user;
     }
-    public User deleteUser(String username){
-        User userToDelete = userRepository.findUserByUsername(username);
-        userRepository.delete(userToDelete);
-
+    public User deleteUser(String id){
+        User userToDelete = userRepository.findById(id).get();
+        if(userToDelete != null) {
+            userRepository.delete(userToDelete);
+        }
+        else{
+            throw new NoSuchElementException();
+        }
         return userToDelete;
     }
 
@@ -52,6 +57,7 @@ public class UserService {
     public User login(User user) {
         User foundUser = userRepository.findUserByPasswordAndUsername(user.getPassword(), user.getUsername());
         if (foundUser != null) {
+            foundUser.setLogin(true);
             return foundUser;
         } else {
             throw new UnauthorizedException("Invalid username or password");

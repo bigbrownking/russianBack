@@ -12,5 +12,4 @@ public class RussianLanguageApplication {
     public static void main(String[] args) {
         SpringApplication.run(RussianLanguageApplication.class, args);
     }
-
 }

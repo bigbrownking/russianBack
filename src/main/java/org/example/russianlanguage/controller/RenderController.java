@@ -1,5 +1,7 @@
 package org.example.russianlanguage.controller;
 
+import org.example.russianlanguage.model.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,11 +40,11 @@ public class RenderController {
         return "adminPage";
     }
     @GetMapping("/isLogin")
-    public ResponseEntity<Boolean> isLogin(HttpSession session) {
+    public ResponseEntity<User> isLogin(HttpSession session) {
         if (session.getAttribute("user") != null) {
-            return ResponseEntity.ok(true);
+            return ResponseEntity.status(HttpStatus.OK).body((User) session.getAttribute("user"));
         } else {
-            return ResponseEntity.ok(false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
