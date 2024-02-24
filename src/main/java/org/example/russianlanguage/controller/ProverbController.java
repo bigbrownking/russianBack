@@ -29,13 +29,9 @@ public class ProverbController {
         this.userService = userService;
     }
 
-    @PostMapping("/getProverbs")
-    public List<Proverb> getProverbs(@RequestBody Map<String, Object> params, HttpServletRequest request){
-        String category = (String) params.get("category");
-        String search = (String) params.get("search");
-
-        //if(category == null && )
-        return proverbService.getAllProverbs();
+    @GetMapping("/getProverbs")
+    public ResponseEntity<List<Proverb>> getProverbs(){
+        return ResponseEntity.status(HttpStatus.OK).body(proverbService.getAllProverbs());
 
     }
 
@@ -61,16 +57,7 @@ public class ProverbController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteProverb(@PathVariable String id, @RequestHeader("userId") String userId){
-        User user = userService.getUserByName(userId);
-        if(user != null && user.isAdmin()){
-            proverbService.deleteProverb(id);
-            return ResponseEntity.status(HttpStatus.OK).body("Proverb deleted successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only admin users can delete proverbs");
-        }
-    }
+
 
 
     @GetMapping("/get/{id}")
