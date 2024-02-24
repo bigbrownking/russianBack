@@ -18,22 +18,22 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User getUser(String _id){
-        User user = userRepository.findById(_id).get();
+    public User getUserByName(String username){
+        User user = userRepository.findUserByUsername(username);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
         return user;
     }
-    public User deleteUser(String _id){
-        User userToDelete = userRepository.findById(_id).get();
+    public User deleteUser(String username){
+        User userToDelete = userRepository.findUserByUsername(username);
         userRepository.delete(userToDelete);
 
         return userToDelete;
     }
 
-    public User updateUser(String _id, User user){
-        User userToUpdate = userRepository.findById(_id).get();
+    public User updateUser(String username, User user){
+        User userToUpdate = userRepository.findUserByUsername(username);
         userToUpdate.setUsername(user.getUsername());
         userToUpdate.setPassword(user.getPassword());
 
@@ -45,21 +45,23 @@ public class UserService {
     }
 
     public User signup(User user){
+        user.setLogin(true);
         return userRepository.save(user);
     }
 
     public User login(User user) {
-        User foundUser = userRepository.findById(user.get_id()).get();
+        User foundUser = userRepository.findUserByPasswordAndUsername(user.getPassword(), user.getUsername());
         if (foundUser != null) {
             return foundUser;
         } else {
             throw new UnauthorizedException("Invalid username or password");
         }
     }
-    public User addProverbToFavorites(User user, Proverb proverb){
+
+    public void addProverbToFavorites(User user, Proverb proverb){
         List<String> favorites = user.getFavorites();
         favorites.add(proverb.getDescription());
         user.setFavorites(favorites);
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 }

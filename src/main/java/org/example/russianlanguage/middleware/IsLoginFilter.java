@@ -1,15 +1,14 @@
 package org.example.russianlanguage.middleware;
 
 import org.example.russianlanguage.model.User;
-import org.springframework.stereotype.Component;
-import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = "/*")
+@WebFilter(urlPatterns = "/")
 public class IsLoginFilter implements Filter {
 
     @Override
@@ -28,12 +27,10 @@ public class IsLoginFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         User user = getUserFromSession(httpRequest);
-
         if (user == null) {
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User is not logged in");
+            httpResponse.sendRedirect("/req");
             return;
         }
-
         chain.doFilter(request, response);
     }
 

@@ -38,7 +38,7 @@ public class IsAdminFilter implements Filter {
 
     }
 
-    private User getUserFromSession(javax.servlet.http.HttpServletRequest request) {
+    private User getUserFromSession(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if (session == null) {

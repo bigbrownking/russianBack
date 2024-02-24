@@ -32,4 +32,9 @@ public class User {
 
     @Field("favorites")
     private List<String> favorites;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }
