@@ -1,0 +1,14 @@
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\repository\ProverbRepository.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\controller\UserController.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\errors\GlobalExceptionHandler.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\service\ProverbService.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\errors\UnauthorizedException.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\middleware\IsLoginFilter.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\model\User.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\controller\ProverbController.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\model\Proverb.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\service\UserService.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\repository\UserRepository.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\controller\RenderController.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\RussianLanguageApplication.java
+C:\Users\user\IdeaProjects\russianLanguage\src\main\java\org\example\russianlanguage\middleware\IsAdminFilter.java

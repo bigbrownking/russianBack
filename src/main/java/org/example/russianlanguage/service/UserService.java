@@ -7,8 +7,7 @@ import org.example.russianlanguage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -19,13 +18,6 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User getUserByName(String username){
-        User user = userRepository.findUserByUsername(username);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
-        return user;
-    }
     public User deleteUser(String id){
         User userToDelete = userRepository.findById(id).get();
         if(userToDelete != null) {
@@ -36,14 +28,14 @@ public class UserService {
         }
         return userToDelete;
     }
-
-    public User updateUser(String username, User user){
-        User userToUpdate = userRepository.findUserByUsername(username);
-        userToUpdate.setUsername(user.getUsername());
-        userToUpdate.setPassword(user.getPassword());
-
-        userRepository.save(userToUpdate);
-        return userToUpdate;
+    public User getUserById(String id){
+        User user = userRepository.findById(id).get();
+        if(user != null){
+            return user;
+        }
+        else{
+            return null;
+        }
     }
     public List<User> getAllUsers(){
         return userRepository.findAll();
@@ -51,6 +43,7 @@ public class UserService {
 
     public User signup(User user){
         user.setLogin(true);
+        user.setFavorites(new HashSet<>());
         return userRepository.save(user);
     }
 
@@ -65,9 +58,18 @@ public class UserService {
     }
 
     public void addProverbToFavorites(User user, Proverb proverb){
-        List<String> favorites = user.getFavorites();
-        favorites.add(proverb.getDescription());
+        Set<Proverb> favorites = user.getFavorites();
+        favorites.add(proverb);
         user.setFavorites(favorites);
         userRepository.save(user);
+    }
+    public Set<Proverb> getFavProverbs(User user){
+        return user.getFavorites();
+    }
+    public Proverb deleteProverb(User user, Proverb proverb){
+        Set<Proverb> fav = user.getFavorites();
+        fav.remove(proverb);
+        userRepository.save(user);
+        return proverb;
     }
 }

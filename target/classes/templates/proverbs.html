@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/img.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proverbs</title>
+</head>
+<body>
+    <nav class="w-100 my-3">
+        <ul class="nav nav-pills justify-content-center">
+            <li class="nav-item">
+                <form method="get" action="/">
+                    <button  id="main" class="nav-link">Главная</button>
+                </form>
+            </li>
+            <li class="nav-item">
+                <form method="get" action="/proverbs">
+                    <button id="proverbs" class="nav-link">Пословицы</button>
+                </form>
+            </li>
+            <li class="nav-item">
+                <form method="get" action="/aboutUs">
+                    <button id="aboutUs" class="nav-link">О нас</button>
+                </form>
+            </li>
+            <li id="loginPage" class="nav-item">
+                <form method="get" action="/login">
+                    <button id="login" class="mx-2 btn btn-outline-success">Войти</button>
+                </form>
+            </li>
+            <li id="profilePage" class="nav-item" style="display: none;">
+                <form method="get" action="/profile">
+                    <button id="profile" class="nav-link">Профиль</button>
+                </form>
+            </li>
+            <li id="adminPageNav" class="nav-item" style="display: none;">
+                <form method="get" action="/adminPage">
+                    <button id="adminPage" class="nav-link">Админ</button>
+                </form>
+            </li>
+            <li id="logoutPage" class="nav-item" style="display: none;">
+                <button class="mx-2 btn btn-outline-danger" id="logout" onclick="logout()">Выйти</button>
+            </li>
+          </ul>
+    </nav>
+    <div class="d-flex justify-content-center" style="margin-top: 20px;">
+        <div class="categories">
+            <div class="categoryList">
+            </div>
+            <div class="currentCategory"></div>
+        </div>
+        <div class="filter row" style="width: 1000px; margin: 20px; align-self: center; justify-content: center;">
+            <div class="col-md-4">
+                <label>Выбрать категорию</label>
+                <select id="changeCategory" class="form-select" style="width: 300px;" onchange="changeCategory()">
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div>
+            
+            <div class="col-md-4"> 
+                <label>Поиск пословицы</label>
+                <div class="search d-flex">
+                    <input id="searchWord" type="text" class="searchWord form-control mb-2" style="width: 250px; margin: 0px;">
+                    <button onclick="clearInput()" id="clearSearchInput" type="button" class="btn bg-transparent" style="margin-left: -40px;margin-top: -10px; z-index: 100;display: none">
+                        <svg style="width: 20px; height: 20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="#000000" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                    </button>
+                    <button style="height: 38px; margin-left: 5px; margin-right: 0px;" class="btn btn-primary" onclick="searchByWord()">Найти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pt-3 justify-content-center">
+        <div class="text-center">
+            <h2>Пословицы</h2>
+        </div>
+        <div class="d-flex justify-content-center">
+            <div class="tableProverbs" style="margin: 15px;"></div>
+        </div>
+    </div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="script.js"></script>
+</html>

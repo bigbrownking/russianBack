@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -31,7 +32,7 @@ public class User {
     private boolean isLogin;
 
     @Field("favorites")
-    private List<String> favorites;
+    private Set<Proverb> favorites;
 
     public User(String username, String password) {
         this.username = username;

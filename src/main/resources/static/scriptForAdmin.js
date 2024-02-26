@@ -29,10 +29,22 @@ function showUsers(data) {
             var tr = document.createElement('tr');
             Object.keys(user).map((key, id) => {
                 var td = document.createElement('td');
-                td.innerText = user[key]
-                td.style.border = "1px solid #000"
-                td.style.padding = "3px"
-                tr.appendChild(td)
+                console.log(key)
+                if(key === "favorites"){
+                    let inner = ""
+                    user[key].forEach(prov =>{
+                        inner += `>>${prov.description}\n `
+                    })
+                    td.innerText = inner
+                    td.style.border = "1px solid #000"
+                    td.style.padding = "3px"
+                    tr.appendChild(td)
+                }else{
+                    td.innerText = user[key]
+                    td.style.border = "1px solid #000"
+                    td.style.padding = "3px"
+                    tr.appendChild(td)
+                }
             })
             //_________________delete user______________________
             var td = document.createElement('button');

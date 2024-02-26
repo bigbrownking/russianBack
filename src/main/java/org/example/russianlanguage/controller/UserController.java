@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
 @ResponseBody
@@ -34,7 +35,6 @@ public class UserController {
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.status(HttpStatus.OK).body(users);
-
     }
 
 
@@ -80,26 +80,54 @@ public class UserController {
 
     @GetMapping("/logOut")
     public ResponseEntity<String> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        if(user != null){
+            user.setLogin(false);
+        }
         request.getSession().invalidate();
         return ResponseEntity.ok("User has been logged out");
     }
 
-    @PostMapping("/addFavorite")
-    public ResponseEntity<User> addProverbToFavorites(@RequestParam String user_id, @RequestBody String proverb_id) {
-        User user = userService.getUserByName(user_id);
-        Proverb proverb = proverbService.getProverb(proverb_id);
-        if (user != null) {
-            userService.addProverbToFavorites(user, proverb);
-            return ResponseEntity.status(HttpStatus.OK).body(user);
-        } else {
+    @PostMapping("/addToFav")
+    public ResponseEntity<User> addProverbToFavorites(@RequestBody Map<String, Object> params, HttpServletRequest request) {
+        Map<String, Object> userParams = (Map<String, Object>) params.get("params");
+        String proverbId = (String) userParams.get("proverbId");
+        String userId = (String) userParams.get("userId");
+        User user = userService.getUserById(userId);
+        HttpSession session = request.getSession();
+        User userGlob = (User) session.getAttribute("user");
+        Proverb proverb = proverbService.getProverb(proverbId);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } else if (proverb == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } else {
+            userService.addProverbToFavorites(userGlob, proverb);
+            return ResponseEntity.status(HttpStatus.OK).body(user);
         }
     }
+
+    @PostMapping("/getFavProverbs")
+    public ResponseEntity<Set<Proverb>> getFavProverbs(@RequestBody Map<String, Object> params, HttpServletRequest request){
+        Map<String, Object> userParams = (Map<String, Object>) params.get("params");
+        String userId = (String) userParams.get("id");
+        User user = userService.getUserById(userId);
+        HttpSession session = request.getSession();
+        User userGlob = (User) session.getAttribute("user");
+        if(user != null){
+            Set<Proverb> favProverbs = userService.getFavProverbs(userGlob);
+            return ResponseEntity.status(HttpStatus.OK).body(favProverbs);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
 
     @PostMapping("/deleteUser")
     public ResponseEntity<Map<String, Object>> deleteUser(@RequestBody Map<String, Object> params) {
         String id = (String) params.get("id");
-        System.out.println(id);
         User userToDelete = userService.deleteUser(id);
         Map<String, Object> response = new HashMap<>();
         if (userToDelete != null) {

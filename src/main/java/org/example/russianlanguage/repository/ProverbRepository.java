@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ProverbRepository extends MongoRepository<Proverb, String> {
-    
+    List<Proverb> getProverbsByCategory(String category);
+
 }
